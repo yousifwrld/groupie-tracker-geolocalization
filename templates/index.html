@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groupie Tracker - Artists</title>
+    <link rel="stylesheet" href="/static/artist.css">
+    <script src="https://kit.fontawesome.com/69ca0ee76d.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- header to display all the pages we have on the website -->
+    <header>
+        <nav>
+            <div class="Heading">
+                <h1>Groupie Tracker</h1>
+            </div>
+
+            <ul class="nav-links">
+                <li>
+                    <a href="/">Home</a>
+                    <a href="/artist">Artists</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+
+    <form class="search-bar" action="/artist" method="GET">
+        <datalist id="suggestions">
+            {{range .Artists}}
+            <option value="{{.Name}} - Artist/Band">
+                {{range .Members}}
+            <option value="{{.}} - Member">
+                {{end}}
+                {{end}}
+
+                {{range .SearchCreationDate }}
+
+            <option value="{{.}} - Creation Date"></option>
+            {{end}}
+
+            {{range .SearchFirstAlbum}}
+            <option value="{{.}} - First Album"></option>
+            {{end}}
+            {{range .SearchLocations}}
+            <option value="{{.}} - Location">
+                {{end}}
+        </datalist>
+        <input type="text" list="suggestions" name="search" placeholder="Search..." required>
+        <button type="submit"><i class="fas fa-search fa-xl"></i></button>
+    </form>
+
+
+
+    <label class="checkbox" onclick="toggleCheckbox()">
+        <i id="checkboxIcon" class="fa-solid fa-sliders fa-xl unchecked"></i>
+    </label>
+
+    <!-- Added a heading for the filter options -->
+    <form action="/artist" method="GET" class="filters" id="filters">
+        <h3>Filter Options:</h3>
+        <div class="numMembers">
+            Number of members:
+            <br>
+            {{range .NumOfMembers}}
+            <!-- Wrapped checkbox and label inside a single label tag for better styling and accessibility -->
+            <label for="numMembers{{.}}">
+                <input type="checkbox" name="numMembers" id="numMembers{{.}}" value="{{.}}">
+                {{.}}
+            </label>
+            {{end}}
+        </div>
+        <br>
+        <div class="creation-date">
+            <label for="MinCreationDate">Minimum Creation Date:</label>
+            <input type="number" min="1950" max="2024" id="MinCreationDate" name="minCreationDate" placeholder="1950">
+            <br>
+            <label for="MaxCreationDate">Maximum Creation Date:</label>
+            <input type="number" min="1950" max="2024" id="MaxCreationDate" name="maxCreationDate" placeholder="2024">
+        </div>
+
+        <div class="first-album">
+            <label for="minFirstAlbum">Minimum First Album:</label>
+            <input type="range" name="minFirstAlbum" id="minFirstAlbum" min="1950" max="2024" value="1950">
+            <span id="minRangeValue">1950</span>
+            <label for="maxFirstAlbum">Maximum First Album:</label>
+            <input type="range" name="maxFirstAlbum" id="maxFirstAlbum" min="1950" max="2024" value="2024">
+            <span id="maxRangeValue">2024</span>
+        </div>
+
+        <div class="locations">
+            <label for="locations">locations:</label>
+            <select name="locations" id="locations">
+                <option value=""></option>
+                {{range .Locations}}
+                <option value="{{.}}">{{.}}</option>
+                {{end}}
+            </select>
+        </div>
+        <input type="submit" value="Filter Results">
+    </form>
+
+    <!-- this container represents the main page with all the artist cards -->
+    <section class="container">
+        <!-- this range loops over the artists structs that we sent as data to the template when executing, and then displays the info -->
+        {{range .Artists}}
+        <div class="card">
+            <div class="card-image" loading="lazy" style="background-image: url('{{.Image}}'); background-size: cover;">
+            </div>
+            <h2>{{.Name}}</h2>
+            <br>
+            <a href="/artist/{{.Id}}">See More</a>
+        </div>
+        {{end}}
+    </section>
+
+    <script>
+        function toggleCheckbox() {
+            const filters = document.getElementById('filters');
+            filters.classList.toggle('active');
+        }
+
+        function updateRangeValue() {
+            var minRangeInput = document.getElementById("minFirstAlbum");
+            var minRangeValue = document.getElementById("minRangeValue");
+
+            var maxRangeInput = document.getElementById("maxFirstAlbum");
+            var maxRangeValue = document.getElementById("maxRangeValue");
+
+            minRangeValue.textContent = minRangeInput.value;
+            maxRangeValue.textContent = maxRangeInput.value;
+        }
+
+        // Attach the event listener to the range input
+        document.getElementById("minFirstAlbum").addEventListener("input", updateRangeValue);
+        document.getElementById("maxFirstAlbum").addEventListener("input", updateRangeValue);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Artist.Name}} - Groupie Tracker</title>
+    <link rel="stylesheet" href="/static/details.css">
+    <style>
+        #map-container {
+            width: 100%;
+            height: 400px;  /* Adjust the height as needed */
+            margin-top: 20px;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header to display all the pages we have on the website -->
+    <header>
+        <nav>
+            <div class="Heading">
+                <h1>Groupie Tracker</h1>
+            </div>
+            <ul class="nav-links">
+                <li>
+                    <a href="/">Home</a>
+                    <a href="/artist">Artists</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Artist info -->
+    <div class="card-container">
+        <div class="card">
+            <div class="card-image" loading="lazy" style="background-image: url('{{.Artist.Image}}'); background-size: cover;"></div>
+            <h2>{{.Artist.Name}}</h2>
+            <h4>-Since: {{.Artist.CreationDate}}-</h4>
+            <h3>FIRST ALBUM</h3>
+            <h4>-{{.Artist.FirstAlbum}}-</h4>
+            <h3>MEMBERS</h3>
+            <h4>{{range .Artist.Members}}<li>{{.}} <br></li>{{end}}</h4>
+            <br>
+        </div>
+
+        <!-- Location info -->
+        <div class="card">
+            <h2>LOCATIONS</h2>
+            <ul id="locations-list">
+                {{range .Locations.Location}}<li>{{.}}<br></li>{{end}}
+            </ul>
+        </div>
+
+        <!-- Dates info -->
+        <div class="card">
+            <h2>DATES</h2>
+            <h4>{{range .Dates.Date}} <li>{{.}} <br>{{end}}</li></h4>
+        </div>
+
+        <!-- Relation info -->
+        <div class="card">
+            <h2>RELATIONS</h2>
+            {{range $location, $Date := .Relations.LocationDates}} 
+                <h4>-{{$location}}-</h4>
+                {{range $Date}}
+                    <h4><li>{{.}}</li></h4>
+                {{end}}
+            {{end}}
+        </div>
+    </div>
+    <h1 class="map-label">Locations</h1>
+    
+
+    <!-- Map container -->
+    <div id="map-container">
+        <div id="map"></div>
+    </div>
+
+
+</body>
+</html>
+
+<script>
+   // Create an empty array to store location values
+   const locationsArray = [];
+
+   // Get the list of locations
+   const locationsList = document.getElementById("locations-list");
+   const locationItems = locationsList.getElementsByTagName("li");
+
+   // Loop through the location items and append each to the array
+   for (let item of locationItems) {
+       let text = item.textContent.trim();
+       text = text.replace(/-/g, ", "); // Replace all "-" with ", "
+       text = text.replace(/_/g, " ");  // Replace all "_" with " "
+       locationsArray.push(text);
+   }
+
+   // Now, locationsArray contains all the locations with replacements
+   console.log(locationsArray); // You can use this array as needed
+
+   // Function to initialize the map
+   function initMap() {
+       const map = new google.maps.Map(document.getElementById("map"), {
+           zoom: 3,
+           center: { lat: 39.8283, lng: -98.5795 }  // Centered over the US
+       });
+
+       // Geocode locations and add markers
+       const geocoder = new google.maps.Geocoder();
+       locationsArray.forEach(location => {
+           geocoder.geocode({ 'address': location }, (results, status) => {
+               if (status === 'OK') {
+                   const marker = new google.maps.Marker({
+                       map: map,
+                       position: results[0].geometry.location
+                   });
+               } else {
+                   console.error('Geocode was not successful for the following reason: ' + status);
+               }
+           });
+       });
+   }
+</script>
+
+<script
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA48Sdm5IPlocmTqUr-kApjrrKfwtzmwL0&callback=initMap&v=weekly"
+defer></script>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Error Page</title>
+    <link rel="stylesheet" href="/static/errors.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Error {{.Code}}</h1>
+        <p class="err-msg">{{.Msg}}</p>
+        <a href="{{.BackToPage}}" class="button">{{.BackToMsg}}</a>
+    </div>
+</body>
+
+</html>
