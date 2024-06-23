@@ -40,10 +40,17 @@ type Relations struct {
 	LocationDates map[string][]string `json:"datesLocations"`
 }
 
+type Cords struct {
+	Name string
+	Lat  float64
+	Lng  float64
+}
+
 // struct to hold all the data together
 type AllDetails struct {
 	Artist    Artists
 	Locations Locations
 	Dates     Dates
 	Relations Relations
+	Cords     []Cords
 }

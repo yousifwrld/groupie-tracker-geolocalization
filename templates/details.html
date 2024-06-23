@@ -88,46 +88,7 @@
 </html>
 
 <script>
-   // Create an empty array to store location values
-   const locationsArray = [];
-
-   // Get the list of locations
-   const locationsList = document.getElementById("locations-list");
-   const locationItems = locationsList.getElementsByTagName("li");
-
-   // Loop through the location items and append each to the array
-   for (let item of locationItems) {
-       let text = item.textContent.trim();
-       text = text.replace(/-/g, ", "); // Replace all "-" with ", "
-       text = text.replace(/_/g, " ");  // Replace all "_" with " "
-       locationsArray.push(text);
-   }
-
-   // Now, locationsArray contains all the locations with replacements
-   console.log(locationsArray); // You can use this array as needed
-
-   // Function to initialize the map
-   function initMap() {
-       const map = new google.maps.Map(document.getElementById("map"), {
-           zoom: 3,
-           center: { lat: 39.8283, lng: -98.5795 }  // Centered over the US
-       });
-
-       // Geocode locations and add markers
-       const geocoder = new google.maps.Geocoder();
-       locationsArray.forEach(location => {
-           geocoder.geocode({ 'address': location }, (results, status) => {
-               if (status === 'OK') {
-                   const marker = new google.maps.Marker({
-                       map: map,
-                       position: results[0].geometry.location
-                   });
-               } else {
-                   console.error('Geocode was not successful for the following reason: ' + status);
-               }
-           });
-       });
-   }
+ 
 </script>
 
 <script

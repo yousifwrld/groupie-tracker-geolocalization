@@ -63,6 +63,20 @@ func DetailsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//getting the latitude and longitude of each location and sotring
+	var cords []Cords
+	for _, loc := range locations.Location {
+		lat, lng, err := GetCords(loc) //calling function for each location
+		if err != nil {
+			ErrorPages(w, r, "500", http.StatusInternalServerError)
+			log.Println(err)
+			return
+		}
+
+		//mapping and storing each value in its propper field
+		cords = append(cords, Cords{Name: loc, Lat: lat, Lng: lng})
+	}
+
 	// dates data
 	datesData, err := GetData("https://groupietrackers.herokuapp.com/api/dates" + artistID) // fetching data from the endpoint
 	if err != nil {
@@ -109,6 +123,7 @@ func DetailsHandler(w http.ResponseWriter, r *http.Request) {
 		Locations: locations,
 		Dates:     dates,
 		Relations: relations,
+		Cords:     cords,
 	}
 
 	temp, err := template.ParseFiles("templates/details.html")
