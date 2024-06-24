@@ -25,7 +25,6 @@ func GetCords(location string) (float64, float64, error) {
 	//formating location into better format
 	location = strings.ReplaceAll(location, "-", ", ")
 	location = strings.ReplaceAll(location, "_", " ")
-	fmt.Println(location)
 	//escaping the location so we can use it as a query in the api
 	location = url.QueryEscape(location)
 
@@ -33,7 +32,7 @@ func GetCords(location string) (float64, float64, error) {
 	apiURL := fmt.Sprintf("https://maps.googleapis.com/maps/api/geocode/json?address=%s&key=%s", location, apiKey)
 
 	//getting the data
-	apiResponse, err := GetData(apiURL)
+	apiData, err := GetData(apiURL)
 	if err != nil {
 		return 0.0, 0.0, err
 	}
@@ -41,7 +40,7 @@ func GetCords(location string) (float64, float64, error) {
 	//unmarshalling data into the struct
 	var response GeocodingResponse
 
-	err = json.Unmarshal(apiResponse, &response)
+	err = json.Unmarshal(apiData, &response)
 	if err != nil {
 		return 0.0, 0.0, err
 	}

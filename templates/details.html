@@ -8,18 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Artist.Name}} - Groupie Tracker</title>
     <link rel="stylesheet" href="/static/details.css">
-    <style>
-        #map-container {
-            width: 100%;
-            height: 400px;  /* Adjust the height as needed */
-            margin-top: 20px;
-        }
-
-        #map {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+    <script src="https://kit.fontawesome.com/69ca0ee76d.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <!-- Header to display all the pages we have on the website -->
@@ -53,9 +42,7 @@
         <!-- Location info -->
         <div class="card">
             <h2>LOCATIONS</h2>
-            <ul id="locations-list">
-                {{range .Locations.Location}}<li>{{.}}<br></li>{{end}}
-            </ul>
+            <h4>{{range .Locations.Location}} <li>{{.}} <br>{{end}}</li></h4>
         </div>
 
         <!-- Dates info -->
@@ -75,11 +62,11 @@
             {{end}}
         </div>
     </div>
-    <h1 class="map-label">Locations</h1>
+    <h1 class="map-label">LOCATIONS <i class="fa-solid fa-location-dot"></i></h1>
     
 
     <!-- Map container -->
-    <div id="map-container">
+    <div class="map-container" id="map-container">
         <div id="map"></div>
     </div>
 

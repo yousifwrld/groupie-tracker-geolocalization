@@ -21,6 +21,7 @@ header {
     background-color: #393e46;
 }
 
+
 .nav-links {
     list-style: none;
 }
@@ -42,11 +43,39 @@ header {
     color: #eeeeee;
 }
 
+.map-label{
+    color: #00adb5;
+    text-align: center;
+    font-family: "Kalam", cursive;
+    font-weight: 700;
+    font-style: normal;
+    animation: transition 0.5s ease-in;
+}
+#map-container {
+    width: 600px;
+    height: 500px; 
+    margin: 0 auto; 
+    padding-bottom: 15px;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    background-color: #393e46;
+    padding: 20px;
+    border-radius: 15px;
+    align-items: center;
+    text-align: center;
+    box-shadow: 5px 15px 7px rgba(0, 0, 0, 0.3);
+    animation: transition 0.5s ease-in;
+}
+
+
 .card-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    padding: 20px;
+    padding: 5px;
 }
 
 .card-image {
@@ -107,18 +136,3 @@ h4 {
     }
 }
 
-.map-label{
-    color: #00adb5;
-    text-align: center;
-}
-
-#map-container {
-    width: 100%;
-    height: 800px; 
-    margin-top: 20px;
-}
-
-#map {
-    width: 100%;
-    height: 100%;
-}
