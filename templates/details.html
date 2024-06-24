@@ -42,7 +42,7 @@
         <!-- Location info -->
         <div class="card">
             <h2>LOCATIONS</h2>
-            <h4>{{range .Locations.Location}} <li>{{.}} <br>{{end}}</li></h4>
+            <h4>{{range .Locations.Location}} <i class="fa-solid fa-location-dot"></i> {{.}} <br>{{end}}</h4>
         </div>
 
         <!-- Dates info -->
@@ -53,7 +53,7 @@
 
         <!-- Relation info -->
         <div class="card">
-            <h2>RELATIONS</h2>
+            <h2>LOCATIONS & DATES</h2>
             {{range $location, $Date := .Relations.LocationDates}} 
                 <h4>-{{$location}}-</h4>
                 {{range $Date}}
