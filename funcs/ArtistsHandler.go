@@ -108,7 +108,7 @@ func ArtistsHandler(w http.ResponseWriter, r *http.Request) {
 		CreationDates = append(CreationDates, date)
 	}
 
-	numOfMembers := r.Form["numMembers"]
+	numOfMembers := r.URL.Query()[("numMembers")]
 	minCreationDate := r.FormValue("minCreationDate")
 	maxCreationDate := r.FormValue("maxCreationDate")
 	minFirstAlbum := r.FormValue("minFirstAlbum")
