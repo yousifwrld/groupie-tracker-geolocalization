@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -9,7 +10,19 @@
     <title>{{.Artist.Name}} - Groupie Tracker</title>
     <link rel="stylesheet" href="/static/details.css">
     <script src="https://kit.fontawesome.com/69ca0ee76d.js" crossorigin="anonymous"></script>
+    <style>
+        .info-content {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            max-width: 200px;
+        }
+        .info-title {
+            font-weight: bold;
+            color: #013a7a;
+        }
+        </style>
 </head>
+
 <body>
     <!-- Header to display all the pages we have on the website -->
     <header>
@@ -29,7 +42,8 @@
     <!-- Artist info -->
     <div class="card-container">
         <div class="card">
-            <div class="card-image" loading="lazy" style="background-image: url('{{.Artist.Image}}'); background-size: cover;"></div>
+            <div class="card-image" loading="lazy"
+                style="background-image: url('{{.Artist.Image}}'); background-size: cover;"></div>
             <h2>{{.Artist.Name}}</h2>
             <h4>-Since: {{.Artist.CreationDate}}-</h4>
             <h3>FIRST ALBUM</h3>
@@ -48,22 +62,25 @@
         <!-- Dates info -->
         <div class="card">
             <h2>DATES</h2>
-            <h4>{{range .Dates.Date}} <li>{{.}} <br>{{end}}</li></h4>
+            <h4>{{range .Dates.Date}} <li>{{.}} <br>{{end}}</li>
+            </h4>
         </div>
 
         <!-- Relation info -->
         <div class="card">
             <h2>LOCATIONS & DATES</h2>
-            {{range $location, $Date := .Relations.LocationDates}} 
-                <h4>-{{$location}}-</h4>
-                {{range $Date}}
-                    <h4><li>{{.}}</li></h4>
-                {{end}}
+            {{range $location, $Date := .Relations.LocationDates}}
+            <h4>-{{$location}}-</h4>
+            {{range $Date}}
+            <h4>
+                <li>{{.}}</li>
+            </h4>
+            {{end}}
             {{end}}
         </div>
     </div>
     <h1 class="map-label">LOCATIONS <i class="fa-solid fa-location-dot"></i></h1>
-    
+
 
     <!-- Map container -->
     <div class="map-container" id="map-container">
@@ -71,13 +88,198 @@
     </div>
 
 
+    <!-- Hidden element to hold coordinates data -->
+    <div id="coordinates" style="display: none;">
+        {{range .Cords}}{{.Name}},{{.Lat}},{{.Lng}};{{end}}
+    </div>
+
+    <script>
+        function initMap() {
+            const coordString = document.getElementById("coordinates").innerHTML.trim();
+            const coords = coordString.split(";").filter(Boolean).map(coord => {
+                const [name, lat, lng] = coord.split(",");
+                return { name: name, lat: parseFloat(lat), lng: parseFloat(lng) };
+            });
+
+            if (coords.length === 0) return;
+
+            const mapOptions = {
+                center: { lat: coords[0].lat, lng: coords[0].lng },
+                zoom: 6,
+                disableDefaultUI: true,
+                styles:[
+    {
+        "featureType": "all",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "color": "#202c3e"
+            }
+        ]
+    },
+    {
+        "featureType": "all",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "gamma": 0.01
+            },
+            {
+                "lightness": 20
+            },
+            {
+                "weight": "1.39"
+            },
+            {
+                "color": "#ffffff"
+            }
+        ]
+    },
+    {
+        "featureType": "all",
+        "elementType": "labels.text.stroke",
+        "stylers": [
+            {
+                "weight": "0.96"
+            },
+            {
+                "saturation": "9"
+            },
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#000000"
+            }
+        ]
+    },
+    {
+        "featureType": "all",
+        "elementType": "labels.icon",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "lightness": 30
+            },
+            {
+                "saturation": "9"
+            },
+            {
+                "color": "#29446b"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "saturation": 20
+            }
+        ]
+    },
+    {
+        "featureType": "poi.park",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "lightness": 20
+            },
+            {
+                "saturation": -20
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "lightness": 10
+            },
+            {
+                "saturation": -30
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#193a55"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {
+                "saturation": 25
+            },
+            {
+                "lightness": 25
+            },
+            {
+                "weight": "0.01"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "all",
+        "stylers": [
+            {
+                "lightness": -20
+            }
+        ]
+    }
+]
+            }
+            const map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+            const infoWindow = new google.maps.InfoWindow({
+                minWidth: 100,
+                maxWidth: 200
+            })
+        
+            coords.forEach(coord => {
+                const marker = new google.maps.Marker({
+                    position: { lat: coord.lat, lng: coord.lng },
+                    map: map,
+                    title: coord.name
+                });
+              
+                function createInfoWindows(){
+                    const infoWindowContent = `
+                    <div class="info-content">
+                        <h3 class="info-title">${coord.name}</h3>
+                    </div>
+                    `;
+
+                    google.maps.event.addListener(marker, 'click', function(){
+                        infoWindow.setContent(infoWindowContent)
+                        infoWindow.open(map, marker);
+                    });
+                }
+                createInfoWindows();
+                
+            });
+
+        }
+    </script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA48Sdm5IPlocmTqUr-kApjrrKfwtzmwL0&callback=initMap&v=weekly"
+        defer></script>
 </body>
+
 </html>
-
-<script>
- 
-</script>
-
-<script
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA48Sdm5IPlocmTqUr-kApjrrKfwtzmwL0&callback=initMap&v=weekly"
-defer></script>
